@@ -9,6 +9,16 @@ using std::vector;
 using std::cout;
 using std::istringstream;
 
+enum class State {kEmpty, kObstacle};
+
+string Cellstring(State state){
+    if(state == State::kObstacle) {
+        return "⛰️ ";
+    } else {
+        return "0 ";
+    }
+}
+
 void PrintBoard(vector<vector<int>> board){
     //alternatively use `auto`
     for(vector<int> v: board){
