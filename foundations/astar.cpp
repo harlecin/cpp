@@ -11,11 +11,10 @@ using std::istringstream;
 
 enum class State {kEmpty, kObstacle};
 
-string Cellstring(State state){
-    if(state == State::kObstacle) {
-        return "⛰️ ";
-    } else {
-        return "0 ";
+string CellString(State state){
+    switch(state) {
+        case State::kObstacle: return "⛰️   ";
+        default: return "0   "; 
     }
 }
 
