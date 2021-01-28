@@ -24,31 +24,32 @@ vector<int> ParseLine(string string){
     char c;
     int n;
     vector<int> output;
-    while(string_stream >> n >> c) {
+    while(string_stream >> n >> c && c == ',') {
         output.push_back(n);
     }
 
     return output;
 }
 
-void ReadBoardFile(string path){
+vector<vector<int>> ReadBoardFile(string path){
     std::ifstream board_file(path);
+    vector<vector<int>> vec_board;
     
     if (board_file) {
         string line;
         int i = 0;
-        vector<vector<int>> vec_board;
         while(getline(board_file, line)) {
-            cout << line << "\n";
             vec_board.push_back(ParseLine(line));
         }
     }
+
+    return vec_board;
 }
 
 int main() {
 
-    
-    ReadBoardFile("1.board");
+    vector<vector<int>> vec_board = ReadBoardFile("1.board");
+    PrintBoard(vec_board);
     return 0;
 }
 
