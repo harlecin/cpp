@@ -95,6 +95,18 @@ for (vector<int> i: vec) {
 }
 ```
 
+While loops work as follows:
+```
+int i = 1;
+while(i < 11){
+    if(i % 2 == 0) {
+        cout << i << "\n";
+    }
+    i++;
+}
+```
+
+
 And declare a function:
 ```
 return_type SomeFunctionName(type_param1 param1, type_param2 param2) {
