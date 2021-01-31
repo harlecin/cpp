@@ -18,31 +18,35 @@ string CellString(State state){
     }
 }
 
-void PrintBoard(vector<vector<int>> board){
+void PrintBoard(vector<vector<State>> board){
     //alternatively use `auto`
-    for(vector<int> v: board){
-        for(int i: v){
-            cout << i << " ";
+    for(vector<State> v: board){
+        for(State i: v){
+            cout << CellString(i) << " ";
         }
         cout << "\n";
     }
 }
 
-vector<int> ParseLine(string string){
+vector<State> ParseLine(string string){
     istringstream string_stream(string);
     char c;
     int n;
-    vector<int> output;
+    vector<State> output;
     while(string_stream >> n >> c && c == ',') {
-        output.push_back(n);
+        if (n == 1){
+            output.push_back(State::kObstacle);
+        } else {
+            output.push_back(State::kEmpty);
+        }
     }
 
     return output;
 }
 
-vector<vector<int>> ReadBoardFile(string path){
+vector<vector<State>> ReadBoardFile(string path){
     std::ifstream board_file(path);
-    vector<vector<int>> vec_board;
+    vector<vector<State>> vec_board;
     
     if (board_file) {
         string line;
@@ -57,7 +61,7 @@ vector<vector<int>> ReadBoardFile(string path){
 
 int main() {
 
-    vector<vector<int>> vec_board = ReadBoardFile("1.board");
+    vector<vector<State>> vec_board = ReadBoardFile("1.board");
     PrintBoard(vec_board);
     return 0;
 }

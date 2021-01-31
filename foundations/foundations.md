@@ -77,6 +77,8 @@ vector<int> vec = {0, 1, 2, 3, 4};
     cout << vec[1];
     cout << vec[100];   //Undefined behavior!
     cout << vec.size()
+
+    vec.push_back(5)    // Add item to end of vecto
 ```
 
 Now let's take a look at looping:
@@ -106,13 +108,21 @@ while(i < 11){
 }
 ```
 
-
-And declare a function:
+Declaring functions is also straightforward:
 ```
+//use 'void' if your function does not return values
 return_type SomeFunctionName(type_param1 param1, type_param2 param2) {
     // stuff
     return something_with_return_type;
 }
+```
+Now let's take a look at `enum`, short for enumerator. You can use `enum` to define custom types in cpp. A color type could look like this:
+```
+// create the enum class
+enum class Color {white, black, blue, red};
+
+// set my_color to blue
+Color my_color = Color::blue;
 ```
 
 ## OPEN
