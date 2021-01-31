@@ -125,6 +125,19 @@ enum class Color {white, black, blue, red};
 Color my_color = Color::blue;
 ```
 
+You can pass values by reference like so:
+```
+int AddOne(int &i){
+    return i++;
+}
+```
+
+Use `const` if you want to enforce that a variable is not mutated after it is initalized at runtime. `constexpr` is used to guarantee that a variable can be evaluated at compile time and is not mutated after initialization.
+
+If you want to guard against accidentally changing a variable that is passed by reference, use `const`.
+
 ## OPEN
 
 - Core Guidelines checker for VS Code?
+- Difference between int vec[2]{0,1} and vector<int> vec{0,1}
+- Are there no named parameters in c++ functions?

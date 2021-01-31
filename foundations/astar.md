@@ -27,6 +27,8 @@ S    ⛰️    0    0    0    0
 ```
 With S(tart) and G(oal) and obstacles in the form of little mountains. Our robot is allowed to travel all points represented by 0 and can only go: up/down, left/right. Our goal is to get from S to G with the minimum number of actions.
 
+## Theory
+
 Let's assume point S has coordinates (0,0). In this case I have only one valid next step: going to point (1,0). Going there costs me one movement point. We will call the sum of the movement points g-value. For every next planned move (every expansion), we start from the point with the smallest g-value. The g-value when the robot hits the Goal is equivalent to the number of steps it has to take in total. This basically amounts to trying every available path, which is not super efficient to put it mildly:)
 
 The a* algorithm comes to the rescue. In order to explore the available options more efficiently, a* uses a heuristic function `h(x,y)` that measures the distance from a given point `(x,y)` to the goal, if there were no obstacles present.
@@ -57,3 +59,9 @@ S    ⛰️    0    0    0    0
 0    0     L   (7,2) ⛰️   G
 ```
 Your g-value at L is 6, the f-value is 9 (6+3). Should we go up or to the right? If we go to the right, we get: (7,7+2) whereas if we go up, we get (7, 7+4). So a* will go right, because we do not want to move away from our goal.
+
+Our a* search algorithm will have the following structure (Credits: udacity.com):
+
+![astar](./a-star-code-structure.png)
+
+## C++ Implementation
