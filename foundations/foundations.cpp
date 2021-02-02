@@ -12,9 +12,7 @@ using std::istringstream;
 using std::abs;
 using std::sort;
 
-enum class State {kEmpty, kObstacle, kClosed, kPath};
-
-
+enum class State {kEmpty, kObstacle, kClosed, kPath, kStart, kFinish};
 
 
 bool CheckValidCell(int x, int y, vector<vector<State>> &grid){
@@ -28,6 +26,9 @@ bool CheckValidCell(int x, int y, vector<vector<State>> &grid){
     return isValid;
 }
 
+/*
+Compare f-values of two cells.
+*/
 bool Compare(const vector<int> node1, const vector<int> node2) {
 
     bool node1_greater_node2 = (node1[2] + node1[3]) > (node2[2] + node2[3]);
@@ -103,15 +104,20 @@ vector<vector<State>> Search(
         if (x == goal[0] && y == goal[1]) {
             return grid;
         }  
+        ExpandNeighbors(current_node, goal, open_nodes, grid);
     }
 
-    cout << "No path found!";
-    return vector<vector<State>> {};
+  // We've run out of new nodes to explore and haven't found a path.
+  cout << "No path found!" << "\n";
+  return std::vector<vector<State>>{};
 }
 
 string CellString(State state){
     switch(state) {
         case State::kObstacle: return "⛰️   ";
+        case State::kPath: return "🚗   ";
+        case State::kStart: return "🚦   ";
+        case State::kFinish: return "🏁   ";
         default: return "0   "; 
     }
 }
@@ -154,6 +160,11 @@ vector<vector<State>> ReadBoardFile(string path){
         }
     }
 
+    int max_rows = vec_board.size();
+    int max_cols = vec_board[0].size();
+
+    vec_board[0][0] = State::kStart;
+    vec_board[max_rows][max_cols] = State::kFinish;
     return vec_board;
 }
 
@@ -163,7 +174,7 @@ int main() {
 
     vector<vector<State>> vec_board = ReadBoardFile("1.board");
     vector<vector<State>> solution = Search(vec_board, init, goal);
-    PrintBoard(solution);
+    PrintBoard(vec_board);
     return 0;
 }
 

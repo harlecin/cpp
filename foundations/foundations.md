@@ -139,5 +139,5 @@ If you want to guard against accidentally changing a variable that is passed by 
 ## OPEN
 
 - Core Guidelines checker for VS Code?
-- Difference between int vec[2]{0,1} and vector<int> vec{0,1}
+- Difference between int vec[2]{0,1} and vector<int> vec{0,1}: array vs. vector
 - Are there no named parameters in c++ functions?
