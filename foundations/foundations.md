@@ -136,6 +136,115 @@ Use `const` if you want to enforce that a variable is not mutated after it is in
 
 If you want to guard against accidentally changing a variable that is passed by reference, use `const`.
 
+## Header files
+Usually, cpp expects all function and class declarations to be in order.
+
+For example this will work:
+```
+void fun1(int i) {
+    cout << i;
+}
+void fun2(int i) {
+    fun1(i);
+}
+```
+
+but this will not:
+```
+void fun2(int i) {
+    fun1(i);
+}}
+void fun1(int i) {
+    cout << i;
+}
+```
+One way to solve this problem is to declare all functions, etc at the top of the file:
+
+```
+#include <iostream>
+//function declarations at the top
+void fun1(int);
+void fun2(int);
+
+void fun2(int i) {
+    fun1(i);
+}}
+void fun1(int i) {
+    cout << i;
+}
+```
+Another is to use header files (file type `.h`):
+```
+//headerfile.h
+#ifndef HEADER_EXAMPLE_H   //include guards prevent a file from being included multiple times
+#define HEADER_EXAMPLE_H
+
+// If you need includes, put them here, not before the include guard!
+
+void fun1(int);
+void fun2(int); //int& if its pass-by-reference
+
+#endif
+```
+which we can use in our `.cpp` file like so:
+```
+#include "headerfile.h"
+...
+```
+Note the quotes here: They tell the preprocessor to look for the file in the same directory as our .cpp file. 
+
+## CMake and Make
+To compile multiple files you need to specify them all individually for the compiler to use. While you can use `g++ *.cpp` to simplify things a bit, you still need to either recompile all files or remember which files you changed and compile only those. This is where build systems like cmake and make enter the picture and the reason many large c++ projects them.
+
+When you compile code there are multiple steps happening in sequence:
+
+1. The preprocessor looks for any statements with an `#` to ensure all necessary code is in the files
+2. Each file is compiled to an object file that has platfrom specific machine code
+3. All object files are linked to creat an executable
+
+Now let's look into how cmake can help us with that:)
+
+cmake works with a configuration file called `CMakeList.txt` that tell it how to build projects.
+
+A cmake file might look like this:
+
+```
+cmake_minimum_required(VERSION 3.5.1)
+
+set(CMAKE_CXX_STANDARD 17)
+
+project(<your_project_name>)
+
+add_executable(your_executable_name  path_to_file_1  path_to_file_2 ...)
+```
+cmake is usually run from within a `/build` folder on the same level as the cmake file. Navigate to the `/build` folder and run:
+```
+cmake ..
+//followed by:
+make
+```
+## Pointers
+Now let's switch to everyone's favorite topic: pointers :)
+
+Pointers, as the name implies point somewhere: specifically to an address in your computers memory. A pointer is simply a variable that holds this address.
+
+You can take a look at memory addresses by printing points:
+```
+#include <iostream>
+using std::cout;
+
+int main() {
+    int i = 10;
+    int* j = &i;   // get address of i and store it in pointer j
+    
+    cout << "Value of variable that j points to: " << *j << "\n";
+    cout << "Hex address stored in j is: " << j << "\n";
+    cout << "Hex address of i is: " << &i << "\n";
+
+}}
+```
+We used `&` to get the address from the pointer. 
+
 ## OPEN
 
 - Core Guidelines checker for VS Code?
