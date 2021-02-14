@@ -243,7 +243,17 @@ int main() {
 
 }}
 ```
-We used `&` to get the address from the pointer. 
+We used `&` to get the address from the pointer. When we used `*` before pointer `j` we dereferenced the pointer to get the value from the address it points to.
+
+That is basically it. Pointers also support addition and substraction, which is called pointer arithmetic and gives you a new address in memory.
+
+If you are wondering "How exactly is a pointer different or more/less useful than a reference?" you can use the following rule of thumb:
+
+> If you don't have a reason to prefer pointers, use references
+
+Practially speaking, if an object already exists, you don't need a pointer.
+
+
 
 ## OPEN
 
