@@ -20,9 +20,9 @@ class Car {
         void setWeight(double w);
         void setBrand(char* brand);
 
-        int getHorsePower();
-        double getWeight();
-        std::string getBrand();
+        int getHorsePower() const;
+        double getWeight() const;
+        std::string getBrand() const;
 
 };
 
@@ -31,9 +31,9 @@ void Car::setHorsePower(int hp) { this->horsepower = hp;}
 void Car::setWeight(double weight) { this->weigth = weight;}
 void Car::setBrand(char* brand) { this->brand = brand;}
 
-int Car::getHorsePower()  {return this->horsepower;}
-double Car::getWeight()  {return this->weigth;}
-std::string Car::getBrand()  {
+int Car::getHorsePower() const {return this->horsepower;}
+double Car::getWeight()  const {return this->weigth;}
+std::string Car::getBrand() const {
     return this->brand;
 }
 
