@@ -163,7 +163,39 @@ int main () {
     Min<float>(1.0, 2.0)
 }
 ```
-Now we have a function `Min()` that works with any class that has a valid implementation of `<`.
+Now we have a function `Min()` that works with any class that has a valid implementation of `<`. So this is probably the main draw back of templates: templates only work if the classes you use them with implement the necessary operations required by the template. In c++ 20 a new feature called 'concepts' will expand on templates to also specify what operations a class has to implement in order for the template to work.
 
-## TODOs:
-- Polymorphism: overloading, overriding, ...
+## Deduction
+We can also use template deduction to use templates to have the compiler figure out how to work with our template:
+
+```
+Min(1,2)
+Min(1.0, 2.0)
+
+// Also works vectors if we use g++ -std=c++17 to compile the code:
+vector v{1,2,4}
+```
+
+## Class Templates
+We can also use templates with classes like so:
+```
+#include<string>
+#include<iostream>
+
+template <typename A, typename B>
+
+class TemplateClass {
+    public:
+        TemplateClass(A a, B b): a_(a), b_(b) {}
+        A a_;
+        B b_;
+};
+
+int main() {
+    TemplateClass<std::string, int> test("a", 1);
+    std::cout << test.a_ << "\n";
+    std::cout << test.b_ << "\n";
+}
+```
+The class above works with any class we pass in.
+
