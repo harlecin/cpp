@@ -1,4 +1,4 @@
-# Classes and OOP
+# From Basic to Advanced OOP in C++
 
 C++ is also commonly called C with classes, but before we dive into classes let's take a look at `structures`:
 
@@ -77,13 +77,13 @@ The benefit of using initalizer lists is that initialization sets the value as s
 
 The syntax for initializer lists is simple: Pass the argument to the constructor to the variable you want to assign to in ():
 ```
-...
+class Test {
     public:
         Constructor(int v): var(v) {}
 
     private:
         int var;
-...
+};
 ```
 Also note that attributes defined as references have to use initialization lists!
 

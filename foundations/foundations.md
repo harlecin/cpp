@@ -2,7 +2,7 @@
 
 When I left my old job at Austrian Post, my colleagues got me an amazing parting-gift: An Amazon Deep Racer :)
 
-While it is quite easy to work with Deep Racer using AWS sagemaker, I wanted to program Deep Racer directly. Deep Racer runs on Ubuntu Linux with the Robot Operating System (ROS).
+While it is quite easy to work with Deep Racer using AWS Sagemaker, I wanted to program Deep Racer directly. Deep Racer runs on Ubuntu Linux with the Robot Operating System (ROS).
 
 ROS is primarily programmed in C++ (although there are wrappers for Python and Julia). I took a C/C++ course many years ago at university and so I decided maybe this is the perfect reason to dive into C++ again, so here I am :)
 
@@ -14,7 +14,7 @@ Maybe it's best to take a quick look at the C++ core guidelines first. You can f
 
 The most important namespace of cpp is the standard library `std::`. Use `std::vector` to access the `vector` class in the SL and include the necessary head file: `#include <vector>'.
 
-Perhaps the single most frustrating thing about compiled languages is that the need to be compiled (I know, shocking:) and often there is no "official" compiler. The same is true for cpp. There are lots of different compilers to choose (e.g. g++, clang, or the visual studio c++ compiler).
+Perhaps the single most frustrating thing about compiled languages is that they need to be compiled (I know, shocking:) and often there is no "official" compiler. The same is true for cpp. There are lots of different compilers to choose (e.g. g++, clang, or the visual studio c++ compiler).
 
 If you are working with VS Code, there is a very nice overview how to setup everything to get started programming in cpp [here](https://code.visualstudio.com/docs/cpp/config-msvc).
 
@@ -252,11 +252,3 @@ If you are wondering "How exactly is a pointer different or more/less useful tha
 > If you don't have a reason to prefer pointers, use references
 
 Practially speaking, if an object already exists, you don't need a pointer.
-
-
-
-## OPEN
-
-- Core Guidelines checker for VS Code?
-- Difference between int vec[2]{0,1} and vector<int> vec{0,1}: array vs. vector
-- Are there no named parameters in c++ functions?
