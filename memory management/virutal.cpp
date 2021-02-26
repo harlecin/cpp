@@ -11,7 +11,7 @@ public:
 // TODO: Declare a class Dog that inherits from Animal
 class Dog : public Animal {
     public:
-        std::string Talk() const { return std::string("Woof");})
+        std::string Talk() const override { return std::string("Woof");})
         
 };
 
