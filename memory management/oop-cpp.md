@@ -112,6 +112,16 @@ int Date::Year() { return year; }
 ## Composition vs. Inheritance
 
 <TODO: include>
+- private
+- protected
+- public
+
+class A : public B, public C {};
+
+## Function and Operator Overloading
+
+<TODO include>
+- 
 
 ## Virtual functions
 
@@ -125,11 +135,35 @@ class Vehicle {
 };
 
 class Car : Vehicle {
-    void Drive() {
+    void Drive() override {
         std::cout << "brumbrum\n";
     }
 };
 ```
 Virtual functions can be used to declare an interface. By having `=0` behind the virtual function, we declare it as a 'pure' virtual function. A pure virtual function is only declared, but not defined. Pure functions make a class abstract, i.e. it cannot be instantiated. You can also omit the `=0` and provide an implementation for the virtual function.
 
-I
+If our function `Drive()` is not declared as `virtual` the implementation in the derived class would hide the base class function.
+
+We put the `override` keyword in our derived class to signal to the compiler that we want to overwrite the base class virtual function. You don't have to use `override` but it can help catch errors.
+
+## Generic Programming
+
+One very cool feature in c++ are Templates. A template allows us to generalize a function to work with many classes without having to implement each individual function like we had to with overloading.
+
+It works as follows:
+
+```
+template <typename T>
+T Min(T a, T b) {
+    return a < b ? a : b;
+}
+
+int main () {
+    Min<int>(1,2)
+    Min<float>(1.0, 2.0)
+}
+```
+Now we have a function `Min()` that works with any class that has a valid implementation of `<`.
+
+## TODOs:
+- Polymorphism: overloading, overriding, ...
