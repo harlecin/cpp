@@ -1,9 +1,16 @@
++++
+date = "2021-02-28"
+title = "Scikit-learn Complete Walk Through (for R-Users)"
++++
+
 # From Basic to Advanced OOP in C++
 
-C++ is also commonly called C with classes, but before we dive into classes let's take a look at `structures`:
+C++ is also commonly called C with classes and in this post I want to give you an overview about basic and advanced oop concepts in c++.
+
+Let's start from the very beginning with `structures`:
 
 ## Structures
-Structs allow you define your own custom types to complement the build-in types (also called 'primitives' or fundamental types) such as `int`, `float`, `string` and so forth. For example we could implement the following type:
+Structs allow you to define your own custom types to complement the build-in types (also called 'primitives' or fundamental types) like `int`, `float`, `string` and so forth. For example we could implement the following type:
 ```
 struct Date {
     // You can provide defaults in {}
@@ -45,15 +52,15 @@ date.Year(2020);
 ```
 Private attributes can only be accessed and changed by methods from within the struct. If we set members as private, we need methods to access and change them, called 'getters' and 'setters'.
 
-As you can see, the code became quite a bit longer and harder to read, so if possible keep attributes public and avoid gettes and setters.
+As you can see, the code became quite a bit longer and harder to read, so if possible keep attributes public and avoid getters and setters.
 
-What we did above is we defined 'invariants'. Invariants restrict the range of attributes, so it is basically a rule that defines which values are allowed.
+To validate data we defined 'invariants'. Invariants restrict the range of attributes, so it is basically a rule that defines which values are allowed.
 
 ## Classes
 
 You could also implement your custom type as a class. All you have to do is switch the `struct` keyword with the `class` keyword. The key difference is that structs use public access by default and classes private access. You can find a detailed discussion of when to use classes vs. structs in [this stackoverflow post](https://stackoverflow.com/questions/54585/when-should-you-use-a-class-vs-a-struct-in-c#54596)
 
-### Constructors
+## Constructors
 
 Constructors initalize objects. All classes come with a default constructor that takes no arguments, but we can also implement our own. 
 
@@ -61,7 +68,7 @@ Including a constructor is easy, just include a method with the same name as the
 ```
 class Date {
     public:
-        // We used an initalizer list, but be careful this by-passes potential setters!
+        // We used an initalizer list for year and set day and month afterwards:
         Date(int d, int m, int y): year(y) {
             day = d;
             month = m;
@@ -87,7 +94,6 @@ class Test {
 ```
 Also note that attributes defined as references have to use initialization lists!
 
-
 In order to keep our class definition lean, we can separate the code for class declaration (header file) and class definition (cpp file):
 ```
 // date.h
@@ -109,19 +115,69 @@ int Date::Day() { return day; }
 int Date::Month() { return month; }
 int Date::Year() { return year; }
 ```
-## Composition vs. Inheritance
 
-<TODO: include>
-- private
-- protected
-- public
+## Inheritance and Composition
 
-class A : public B, public C {};
+Inheritance in c++ is easily accomplished likes so:
+```
+class Base {
+    public:
+        int a;
+    protected:
+        int b;
+    private:
+        int c; 
+};
+
+class PublicDerived : public Base {
+    // a is public
+    // b is protected
+    // c is not accessible from Derived
+};
+
+class ProtectedDerived : protected Base {
+    // a is protected
+    // b is protected
+    // c is not accessible from Derived
+};
+
+class PrivateDerived : private Base {
+    // a is private
+    // b is private
+    // c is not accessible from Derived
+};
+```
+
+If you use no access specifier keyword the default inheritance is private.
+For more info on when to use `protected` checkout the docs [here](https://docs.microsoft.com/en-us/cpp/cpp/protected-cpp?view=msvc-160).
+
+Multiple inheritance has the following syntax:
+```
+class Derived : public BaseA, public BaseB {
+    ...
+};
+```
+
+An alternative to inheritance is to use composition:
+```
+class A {};
+
+class B {
+    A()
+};
+```
 
 ## Function and Operator Overloading
 
-<TODO include>
-- 
+Operator overloading works just like regular function overloading, but you have to write `operator` before the operator you want to overload. For example, if you have a Matrix class you could overload the `+, -, <>` operators to work with matrices.
+
+The syntax looks the following:
+
+```
+PointXY operator+(const PointXY& addend) {
+  //...logic to add Points
+}
+```
 
 ## Virtual functions
 
