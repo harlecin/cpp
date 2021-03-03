@@ -1,9 +1,7 @@
 +++
 date = "2021-02-28"
-title = "Scikit-learn Complete Walk Through (for R-Users)"
+title = "From Basic to Advanced OOP in C++"
 +++
-
-# From Basic to Advanced OOP in C++
 
 C++ is also commonly called C with classes and in this post I want to give you an overview about basic and advanced oop concepts in c++.
 
