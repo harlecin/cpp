@@ -24,3 +24,57 @@ Why do we need yet another number system?
 3. Since 1 byte is equal to 8 bits (2^8=256), it is natural to represent a byte with a hex number.
 
 ## Analysing Memory with a Debugger
+
+Now we take a look at how the following program stores variables in memory:
+
+```
+//file test.cpp with executable test
+1 #include <stdio.h>
+2 
+3 int main()
+4 {
+5   char str[] = "Hello world c++!";
+6
+7   printf("%s", str);
+8 }
+```
+
+First, let's attach `gdb`, add a breakpoint and run:
+```
+gdb ./test
+(gdb) break 7
+(gdb) r
+```
+Now let's print our vector and it's memory address:
+```
+(gdb) p str
+$1 = "Hello world c++!"
+(gdb) p &str
+$2 = (char (*)[17]) 0x7fffffffd9200
+```
+The vector is allocated at memory position `0x7fffffffd9200`. The leading `0x` signifies that the following number is in hexadecimal. If you are interested in why the postfix `0x` was chosen, take a look at this [stackoverflow](https://stackoverflow.com/questions/2670639/why-are-hexadecimal-numbers-prefixed-with-0x) post.
+
+If you want to take a look at this specific memory address, you can do so like so:
+```
+//x ... print memory, 5 ... number of units, x ... in hex, b ... unit Byte
+(gdb) x/5xb 0x7fffffffd920
+0x7fffffffd920: 0x48    0x65    0x6c    0x6c    0x6f
+```
+
+Now if we go back to the ascii table we will see that this is the hex representation of "Hello".
+
+To take a look at the next byte, we can simply increment our hex number by one:
+```
+(gdb) x/5xb 0x7fffffffd920+1
+0x7fffffffd921: 0x65    0x6c    0x6c    0x6f    0x20
+```
+Giving us "ello ": So we moved one Byte by incrementing the hex-address: This is basically all there is to pointer arithmetic:)
+
+In general, you can get the size of a data type in c++ by using:
+```
+sizeof(T)
+```
+So for example `sizeof(int)` gives us 4 bytes. If you plot the addresses of an int array, you will see that the addresses increment by 4 between each individual number.
+
+## Cache Aware Programming
+Depending on how data is stored the way it is accessed usually has a rather large impact on performance. 
