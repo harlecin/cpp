@@ -75,6 +75,3 @@ In general, you can get the size of a data type in c++ by using:
 sizeof(T)
 ```
 So for example `sizeof(int)` gives us 4 bytes. If you plot the addresses of an int array, you will see that the addresses increment by 4 between each individual number.
-
-## Cache Aware Programming
-Depending on how data is stored the way it is accessed usually has a rather large impact on performance. 
