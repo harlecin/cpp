@@ -35,3 +35,62 @@ https://www.cprogramming.com/tutorial/const_correctness.html
 
 ## Class members and initialization the right way
 https://medium.com/pranayaggarwal25/using-modern-class-members-and-initializations-c11e931c3ba
+
+## Overview ByVal, ByRef, ByPointer
+```
+#include <stdio.h>
+    
+void CallByValue(int i)
+{
+    int j = 1; 
+    printf ("call-by-value: %p\n",&j);
+}
+
+void CallByPointer(int *i)
+{
+    int j = 1; 
+    printf ("call-by-pointer: %p\n",&j);
+}
+
+void CallByReference(int &i)
+{
+    int j = 1; 
+    printf ("call-by-reference: %p\n",&j);
+}
+
+void CallByReferenceConst(int const &i) {
+    int j = 1;
+    printf ("call-by-reference: %p\n",&j);
+}
+
+int main()
+{
+    int i = 0;
+    printf ("stack bottom: %p\n",&i);
+    
+    CallByValue(i);
+
+    CallByPointer(&i);
+
+    CallByReference(i);
+
+    CallByReferenceConst(i);
+
+    return 0;
+}
+```
+vs.
+```
+#include<iostream>
+using namespace std;
+class Demo {
+   int val;
+   public:
+   Demo(int x = 0) {
+      val = x;
+   }
+   int getValue() const { //--> this tells the compiler that the function will not modify the class object Demo, but if you pass arguments they can be modified! (void X::access(Y const& y) const;)
+      return val;
+   }
+};
+```
