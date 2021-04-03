@@ -273,5 +273,45 @@ std::shared_ptr<Thread> T3(new Thread(1));
 std::thread t3{&Thread::print, T3, 1}
 ```
 
+We can also easily create threads in a vector. The following example highlights a concurrency bug that is introduced if we pass `i` by reference instead of by value (credits: Udacity.com):
+```
+#include <iostream>
+#include <thread>
+#include <chrono>
+#include <random>
+#include <vector>
+
+int main()
+{
+    // create threads
+    std::vector<std::thread> threads;
+    for (size_t i = 0; i < 10; ++i)
+    {
+        // create new thread from a Lambda
+        //Note: if you write [&i] you get random memory access, because the execution of threads
+        //is not in order, the for loop quits and i is not in scope anymore!
+        threads.emplace_back([i]() {
+            
+            // wait for certain amount of time
+            std::this_thread::sleep_for(std::chrono::milliseconds(10 * i));
+
+            // perform work
+            std::cout << "Hello from Worker thread #" << i << std::endl;
+        });
+    }
+
+    // do something in main()
+    std::cout << "Hello from Main thread" << std::endl;
+
+    // call join on all thread objects using a range-based loop
+    for (auto &t : threads)
+        t.join();
+
+    return 0;
+}
+```
+
+That's it for the introduction :)
+
 ## References:
 - Udacity C++ Nanodegree
