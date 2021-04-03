@@ -111,3 +111,47 @@ Finished work in thread with id = 18548
 
 > Note: If you use g++ do not forget to add the flag -pthread! The MSVC compiler works without a flag.
 
+Concurrent programs are non-deterministic in their execution, i.e. it cannot be predicted which thread will execute at which point in time. If we want to enforce a specific order of execution we can do this for example by strategically placing the `.join()` call.
+
+By default, if you do not join threads the program will crash. You can use `t.detach()` to "detach" a thread. Now the program will continue executing, not waiting for the thread. The thread destructor does not block execution nor does it terminate the thread. A detached thread cannot be joined again!
+
+## Threads with Function Objects
+
+In the example above we passed a simple function to a worker thread. But we can also pass a class instance to a thread if it implements the function-call operator. So let's create a class with an overloaded `()` operator:
+
+```
+#include <iostream>
+#include <thread>
+
+class Thread {
+    public:
+        void operator()() {
+            std::cout << "Thread object created" << std::endl;
+        }
+};
+
+int main()
+{
+    // create thread
+    // c++ most vexing parse:
+    // std::thread t(Thread()); --> this will not work
+   
+    // All of the following will:
+    std::thread t1{Thread()};
+    std::thread t2((Thread()));
+    std::thread t3 = std::thread(Thread());
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    std::cout << "Finished work in main thread with id = " << std::this_thread::get_id() << std::endl;
+
+    // Threads are non-blocking!
+    // Use join() to block execution of the parent until the child thread finishes
+    t1.join();
+    t2.join();
+    t3.join();
+
+    return 0;
+}
+```
+
+The code above illustrates the *most vexing parse* in c++: When the c++ grammar cannot differentiate between the construction of a class instance and a function, the compiler is required to interprete it as a function.
