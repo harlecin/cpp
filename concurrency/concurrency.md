@@ -155,3 +155,123 @@ int main()
 ```
 
 The code above illustrates the *most vexing parse* in c++: When the c++ grammar cannot differentiate between the construction of a class instance and a function, the compiler is required to interprete it as a function.
+
+In all three cases, the function object is copied to the thread and the new thread calls the `()`operator. So one way to pass data to a thread is to pass it to the constructor of our class.
+
+## Detour: Lambdas
+
+We can also use lambdas to start threads and pass data to it. A lambda function is a function object, also called 'functor'. 
+
+Lambdas consist of four parts:
+```
+       []           mutable           ()              {}
+   capture list
+    &, =, vars      optional     parameter list       body
+```
+By default, a lambda has only access to variables in its enclosing `{}`. By passing variables in the capture list we make them visible to our lambda function. If we pass `&` we make all variables from the enclosing scope visible by reference, if we pass `=` we copy them by value or alternatively we specify the variables we want to capture individually. All variables in a capture list are immutable by default. If we want to change them, we have to include `mutable` behind the capture list. For a detailed intro to lambdas checkout this [blog post](https://blog.feabhas.com/2014/03/demystifying-c-lambdas/).
+
+Some example lambdas can look like this:
+```
+    int x = 0; // Define an integer variable
+
+    // By reference
+    auto l0 = [&x]() { std::cout << x << std::endl; };
+    l0();
+    auto l1 = [&x]() mutable { std::cout << ++x << std::endl; };
+    l1();
+    
+    // capture by value
+    // auto l2 = [x]() { std::cout << ++x << std::endl; }; --> error
+    // this will work, but id is only changed in the local scope!
+    auto l3 = [x]() mutable { std::cout << ++x << std::endl; };
+    l3();
+
+    auto l4 = [](int x) { std::cout << x << std::endl; };
+    l4(x);;
+```
+
+A lamda always has return type `auto`.
+
+## Threads with Lambdas
+Since lambdas are function objects, we can pass them to a thread like so:
+
+```
+auto l1 = [&x]() mutable { std::cout << ++x << std::endl; };
+std::thread t4(l1);
+
+t4.join();
+```
+
+## Threads with Variadic Templates & Member Functions
+
+The thread constructor is a 'variadic' template, meaning we can pass it a function with all its arguments directly:
+
+```
+#include <iostream>
+#include <thread>
+
+void Test(int i, int& j) { std::cout << i << std::endl;} 
+
+int main()
+{
+    int i = 1; 
+
+    //Note: We use std::ref() to signal that the argument is a reference:
+    std::thread t1(Test, i, std::ref(i));
+
+    t1.join();
+
+    return 0;
+}
+
+```
+When we pass a function using a variadic template, the arguments are copied if they are lvalues and moved if they are rvalues (rvalue -> I have no name). We can use `std::move()` to force move semantics on lvalues if desired, but then the object content is lost to the parent thread.
+
+Now, let's take a look at using member functions with threads:
+```
+#include <iostream>
+#include <thread>
+
+class Thread {
+    private:
+        int x_ = 0;
+    public:
+        Thread(int x) { x_ = x;}
+
+        void operator()() {
+            std::cout << "Thread object created" << std::endl;
+        }
+        void print(int p) {
+            std::cout << "Member function printing: " << x_ + p << std::endl;
+        }
+};
+
+
+int main()
+{
+
+    Thread T1(1);
+    Thread T2(2);
+    //By value
+    std::thread t1{&Thread::print, T1, 1};
+
+    //By reference
+    std::thread t2{&Thread::print, &T2, 1};
+
+    std::cout << "Finished work in main thread with id = " << std::this_thread::get_id() << std::endl;
+
+
+    t1.join();
+    t2.join();
+
+    return 0;
+}
+```
+We need to be careful that `T2` is not destructed before the thread finishes if we pass it by reference, else we access an invalid memory address. We can use a smart pointer to make sure that it is not deallocated to early:
+```
+std::shared_ptr<Thread> T3(new Thread(1));
+std::thread t3{&Thread::print, T3, 1}
+```
+
+## References:
+- Udacity C++ Nanodegree
