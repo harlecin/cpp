@@ -33,6 +33,8 @@ https://www.cprogramming.com/tutorial/const_correctness.html
 ## Valgrind on Linux
 https://www.cprogramming.com/tutorial/const_correctness.html
 
+valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file=/home/workspace/valgrind-out.txt /home/workspace/a.out
+
 ## Class members and initialization the right way
 https://medium.com/pranayaggarwal25/using-modern-class-members-and-initializations-c11e931c3ba
 
@@ -94,3 +96,188 @@ class Demo {
    }
 };
 ```
+
+Wieso funktioniert das:
+```
+int *p = (int*)malloc(1); //malloc(2*sizeof(int))
+    p[0] = 1; p[1] = 2;
+```
+--
+From Udacity:
+In some cases, it makes sense to separate memory allocation from object construction. Consider a case where we need to reconstruct an object several times. If we were to use the standard new/delete construct, memory would be allocated and freed unnecessarily as only the content of the memory block changes but not its size. By separating allocation from construction, we can get a significant performance increase.
+
+C++ allows us to do this by using a construct called placement new: With placement new, we can pass a preallocated memory and construct an object at that memory location. Consider the following code:
+
+void *memory = malloc(sizeof(MyClass));
+MyClass *object = new (memory) MyClass;
+There is however, no delete equivalent to placement new, so we have to call the destructor explicitly in this case instead of using delete as we would have done with a regular call to new:
+
+object->~MyClass();
+free(memory); 
+
+
+In addition to the new and delete operators we have seen so far, we can use the following code to create an array of objects:
+
+void* operator new[](size_t size);
+void operator delete[](void*);
+
+Let us consider the example on the right, which has been slightly modified to allocate an array of objects instead of a single one.
+--
+
+
+## exclusive copy
+```
+#include <iostream>
+
+class ExclusiveCopy
+{
+private:
+    int *_myInt;
+
+public:
+    ExclusiveCopy()
+    {
+        _myInt = (int *)malloc(sizeof(int));
+        std::cout << "resource allocated" << std::endl;
+    }
+    ~ExclusiveCopy()
+    {
+        if (_myInt != nullptr)
+        {
+            free(_myInt);
+            std::cout << "resource freed" << std::endl;
+        }
+            
+    }
+    ExclusiveCopy(ExclusiveCopy &source)
+    {
+        _myInt = source._myInt;
+        source._myInt = nullptr;
+    }
+    ExclusiveCopy &operator=(ExclusiveCopy &source)
+    {
+        _myInt = source._myInt;
+        source._myInt = nullptr;
+        return *this;
+    }
+};
+
+int main()
+{
+    ExclusiveCopy source;
+    ExclusiveCopy destination(source);
+
+    return 0;
+}
+```
+
+## deep copy
+```
+#include <iostream>
+
+class DeepCopy
+{
+private:
+    int *_myInt;
+
+public:
+    DeepCopy(int val)
+    {
+        _myInt = (int *)malloc(sizeof(int));
+        *_myInt = val;
+        std::cout << "resource allocated at address " << _myInt << std::endl;
+    }
+    ~DeepCopy()
+    {
+        free(_myInt);
+        std::cout << "resource freed at address " << _myInt << std::endl;
+    }
+    DeepCopy(DeepCopy &source)
+    {
+        _myInt = (int *)malloc(sizeof(int));
+        *_myInt = *source._myInt;
+        std::cout << "resource allocated at address " << _myInt << " with _myInt = " << *_myInt << std::endl;
+    }
+    DeepCopy &operator=(DeepCopy &source)
+    {
+        _myInt = (int *)malloc(sizeof(int));
+        std::cout << "resource allocated at address " << _myInt << " with _myInt=" << *_myInt << std::endl;
+        *_myInt = *source._myInt;
+        return *this;
+    }
+};
+
+int main()
+{
+    DeepCopy source(42);
+    DeepCopy dest1(source);
+    DeepCopy dest2 = dest1;
+
+    return 0;
+}
+```
+
+
+## Shared copy
+```
+#include <iostream>
+
+class SharedCopy
+{
+private:
+    int *_myInt;
+    static int _cnt; //use static to make this variable visible to all instances
+
+public:
+    SharedCopy(int val);
+    ~SharedCopy();
+    SharedCopy(SharedCopy &source);
+};
+
+int SharedCopy::_cnt = 0;
+
+SharedCopy::SharedCopy(int val)
+{
+    _myInt = (int *)malloc(sizeof(int));
+    *_myInt = val;
+    ++_cnt;
+    std::cout << "resource allocated at address " << _myInt << std::endl;
+}
+
+SharedCopy::~SharedCopy()
+{
+    --_cnt;
+    if (_cnt == 0)
+    {
+        free(_myInt);
+        std::cout << "resource freed at address " << _myInt << std::endl;
+    }
+    else
+    {
+        std::cout << "instance at address " << this << " goes out of scope with _cnt = " << _cnt << std::endl;
+    }
+}
+
+SharedCopy::SharedCopy(SharedCopy &source)
+{
+    _myInt = source._myInt;
+    ++_cnt;
+    std::cout << _cnt << " instances with handles to address " << _myInt << " with _myInt = " << *_myInt << std::endl;
+}
+
+int main()
+{
+    SharedCopy source(42);
+    source.
+    SharedCopy destination1(source);
+    SharedCopy destination2(source);
+    SharedCopy destination3(source);
+
+    return 0;
+}
+```
+
+- Deleting object remains that were moved?
+
+make_unique()
+make_shared()
